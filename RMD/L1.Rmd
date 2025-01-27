@@ -1,0 +1,146 @@
+---
+title: "L1_md"
+author: "Álvaro Pérez"
+date: "2025-01-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Getting Started
+
+## Console commands
+
+R console is to use it as a calculator
+
+```{r}
+1 + 1
+```
+
+You can break up mathematical expressions over multiple lines
+
+```{r}
+## let's break it over multiple lines
+1 + 2 + 3 + 4 + 5 + 6 +
+    7 + 8 + 9 +
+    10
+```
+
+Text inside quotes is called a string. You can break up text over multiple lines; R waits for a close quote before processing it.
+
+```{r}
+"Good afternoon"
+```
+
+## Objects
+
+An object in R:
+
+-   contains only letters, numbers, full stops, and underscores
+
+-   starts with a letter or a full stop and a letter
+
+-   distinguishes uppercase and lowercase letters
+
+Use the assignment operator\<-\` to assign the value on the right to the object named on the left.
+
+```{r}
+## use the assignment operator '<-'
+## R stores the number in the object
+x <- 5
+```
+
+## Environment
+
+Anytime you assign something to a new object, R creates a new entry in the global environment. Objects in the global environment exist until you end your session; then they disappear forever
+
+```{r}
+ls()            # print the objects in the global environment
+rm("x")         # remove the object named x from the global environment
+rm(list = ls()) # clear out the global environment
+```
+
+## Whitespace
+
+R mostly ignores whitespace: spaces, tabs, and line breaks. This means that you can use whitespace to help you organise your code.
+
+```{r}
+# a and b are identical
+a <- list(ctl = "Control Condition", exp1 = "Experimental Condition 1", exp2 = "Experimental Condition 2")
+
+# but b is much easier to read
+b <- list(ctl  = "Control Condition", 
+          exp1 = "Experimental Condition 1", 
+          exp2 = "Experimental Condition 2")
+```
+
+When you see \> at the beginning of a line, that means R is waiting for you to start a new command.
+
+## Function syntax
+
+If you want 10 random numbers from a normal distribution with mean of 0 and standard deviation, you can just use the defaults.
+
+```{r}
+rnorm(10)
+```
+
+If you want 10 numbers from a normal distribution with a mean of 100:
+
+```{r}
+rnorm(10, 100)
+```
+
+This would be an equivalent but less efficient way of calling the function:
+
+```{r}
+rnorm(n = 10, mean = 100)
+```
+
+## Add-on packages
+
+Remember: **Install ≠ Load**
+
+```{r}
+install.packages("ggExtra")
+```
+
+### Loading a package
+
+```{r}
+library(ggExtra)
+```
+
+## Organising a project
+
+```{r}
+# load add-on packages
+library(tidyverse)
+
+# set object ----
+n <- 100
+
+# simulate data ----
+data <- data.frame(
+  id = 1:n,
+  dv = c(rnorm(n/2, 0), rnorm(n/2, 1)),
+  condition = rep(c("A", "B"), each = n/2)
+)
+
+# plot data ----
+ggplot(data, aes(condition, dv)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.25, 
+               aes(fill = condition),
+               show.legend = FALSE)
+
+# save plot ----
+ggsave("sim_data.png", width = 8, height = 6)
+```
+
+## Working directory
+
+```{r}
+setwd("/Users/alvaroperezlopez/Desktop/Curso R")
+```

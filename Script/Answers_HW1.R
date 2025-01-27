@@ -2,9 +2,10 @@
 
 #install.packages("dplyr")
 library(dplyr)
+library(tidyverse)
 
 setwd("/Users/alvaroperezlopez/Desktop/Curso R/DATA")
-read_csv("1976-2020 president.csv")
+X1976_2020_president <- read_csv("1976-2020-president.csv")
 
 # Rename database 
 US_elections <- X1976_2020_president

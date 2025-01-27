@@ -1,12 +1,15 @@
-#### Author: Álvaro Pérez (Based on Mauricio Romero's notes)
+#### Title: Lecture 1 - Getting started with R
+#### Author: Álvaro Pérez
 #### Date: August 27, 2024
+#### Last uopdate: January 26, 2025
 
 rm(list=ls()) #delete everything in memory
-#Set the working path depending on what computer I'm on
-if(Sys.info()["user"]=="Álvaro") setwd("C:/Users/alvaroperezlopez/Desktop/Curso R")
+
+setwd("/Users/alvaroperezlopez/Desktop/Curso R")
 library(stargazer)
 library(tidyverse)
 library(ggplot2)
+
 
 #Generate 500 heads and tails
 data <- sample(c("Heads","Tails"),500,replace=TRUE)

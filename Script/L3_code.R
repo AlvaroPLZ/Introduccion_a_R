@@ -1,170 +1,232 @@
+#### Author: Álvaro Pérez
+#### Date: February 9, 2025
 
-#### Author: Álvaro Pérez (Based on Romero Londoño notes)
-#### Date: September 17, 2024
+#### 1. Setup ####
 
-library(stargazer)
-library(tidyverse)
+install.packages("dataskills")
+library(dataskills)
+install.packages("plotly")
+library(plotly)
+install.packages("cowplot")
+library(cowplot)
 library(ggplot2)
+library(tidyverse)
 
-#For loop practice
-data(mtcars)
-abovemed <- mtcars %>% filter(cyl >= median(cyl))
-belowmed <- mtcars %>% filter(cyl < median(cyl))
-for (i in c('mpg','disp','hp','wt')) {
-  print(mean(abovemed[[i]])-mean(belowmed[[i]]))
-}
+pets <- read_csv("https://psyteachr.github.io/msc-data-skills/data/pets.csv", col_types = "cffiid")
+data("pets")
 
+#### 2. Basic Plots ####
 
-#For loop practice 2
-data(mtcars)
-unique(mtcars$cyl)
-for (c in unique(mtcars$cyl)) {
-  print(median(filter(mtcars,cyl==c)$mpg))
-}
+plot(x = pets$pet)
 
+plot(x = pets$pet, y = pets$score)
 
-for (c in unique(mtcars$cyl)) {
-  print(paste0(c("The median mpg for cyl = ",c,
-                 " is ",median(filter(mtcars,cyl==c)$mpg)),
-               collapse=''))
-}
+plot(x = pets$age, y = pets$weight)
 
+hist(pets$score, breaks = 20)
 
+#### 3. GGplots ####
 
-############################################# 
-####### next  ################
-############################################# 
-#printing only odd numbers
-m=20
-for (k in 1:m){
-  if (!k %% 2){ #checks if number is odd
-    next
-  }
-  print(k)
-}
+ggplot()
 
-############################################# 
-####### break  ################
-############################################# 
-# finding the first number divisible by 13 greater than 100
+mapping <- aes(x = pet, 
+               y = score, 
+               colour = country, 
+               fill = country)
+ggplot(data = pets, mapping = mapping)
 
-for (k in 100:100000){
-  if (!k %% 13){ #checks if number is odd
-    break
-  }
-}
-print(k)
+ggplot(pets, aes(pet, score, colour = country, fill = country)) +
+  geom_violin(alpha = 0.5) +
+  labs(x = "Pet type",
+       y = "Score on an Important Test",
+       colour = "Country of Origin",
+       fill = "Country of Origin",
+       title = "My first plot") +
+  theme_bw(base_size = 15)
 
-############################################# 
-####### IF STATEMENTS ################
-############################################# 
-#Identifying prime number
-for(num in 1:100){
-  # Program to check if the input number is prime or not
-  flag = 0
-  # prime numbers are greater than 1
-  if(num > 1) {
-    # check for factors
-    flag = 1
-    for(i in 2:(num-1)) {
-      if ((num %% i) == 0) { 
-        flag = 0 #if number is divisible, then not prime
-        break #and we can break the loop
-      }
-    }
-  } 
-  if(num == 2)    flag = 1
-  if(flag == 1) {
-    print(paste(num,"is a prime number"))
-  } else {
-    print(paste(num,"is not a prime number"))
-  }
-}
+#### 4. Common Plot Types ####
 
-############################################# 
-####### function ################
-############################################# 
-#Identifying prime number
-prime_num<-function(num){
-  # Program to check if the input number is prime or not
-  flag = 0
-  # prime numbers are greater than 1
-  if(num > 1) {
-    # check for factors
-    flag = 1
-    for(i in 2:(num-1)) {
-      if ((num %% i) == 0) { 
-        flag = 0 #if number is divisible, then not prime
-        break #and we can break the loop
-      }
-    }
-  } 
-  if(num == 2)    flag = 1
-  return(flag)
-}
-prime_num(2)
-prime_num(3)
-prime_num(4)
-prime_num(6131)
-prime_num(4684561123)
+# Bar plot
+ggplot(pets, aes(pet)) +
+  geom_bar()
 
-############################################# 
-####### multiple things    ################
-############################################# 
-## function to get x raised to the power y 
-pow <- function(x, y = 2) { 
-  result1 <- x^y
-  return(result1)
-}
-pow(3)
-pow(3,3)
-############################################# 
-############## VISAUALIZATION ###############
-#############################################
+# Density plot
+ggplot(pets, aes(score)) +
+  geom_density()
 
+ggplot(pets, aes(score, fill = pet)) +
+  geom_density(alpha = 0.5)
 
-EnrollmentGradeAge=read.csv("http://mauricio-romero.com/data/class/EnrollmentGradeAge.csv")
-pdf("Lectures/figures/Step1.pdf")
-barplot(t(EnrollmentGradeAge[,2:6]))
-dev.off()
-pdf("Lectures/figures/Step2.pdf")
-barplot(t(EnrollmentGradeAge[,2:6]),names.arg=EnrollmentGradeAge[,1])
-dev.off()
-pdf("Lectures/figures/Step3.pdf")
-barplot(t(EnrollmentGradeAge[1:14,2:6]),names.arg=EnrollmentGradeAge[1:14,1])
-dev.off()
-pdf("Lectures/figures/Step4.pdf")
-barplot(t(100*EnrollmentGradeAge[1:14,2:6]),names.arg=EnrollmentGradeAge[1:14,1])
-dev.off()
-pdf("Lectures/figures/Step5.pdf")
-barplot(t(100*EnrollmentGradeAge[1:14,2:6]),names.arg=EnrollmentGradeAge[1:14,1],
-        col=c("#FAA43A","#5DA5DA","#4D4D4D","#F15854","#60BD68"))
-dev.off()
-pdf("Lectures/figures/Step6.pdf")
-barplot(t(100*EnrollmentGradeAge[1:14,2:6]),names.arg=EnrollmentGradeAge[1:14,1],
-        col=c("#FAA43A","#5DA5DA","#4D4D4D","#F15854","#60BD68"),
-        ylim=c(0,100))
-dev.off()
-pdf("Lectures/figures/Step7.pdf")
-barplot(t(100*EnrollmentGradeAge[1:14,2:6]),names.arg=EnrollmentGradeAge[1:14,1],
-        col=c("#FAA43A","#5DA5DA","#4D4D4D","#F15854","#60BD68"),
-        ylim=c(0,100), cex.lab=1.5,cex.axis=1.5,xlab="Age",ylab="% enrollment")
-dev.off()
-pdf("Lectures/figures/Step8.pdf")
-barplot(t(100*EnrollmentGradeAge[1:14,2:6]),names.arg=EnrollmentGradeAge[1:14,1],
-        col=c("#FAA43A","#5DA5DA","#4D4D4D","#F15854","#60BD68"),
-        ylim=c(0,100), cex.lab=1.5,cex.axis=1.5,xlab="Age",ylab="% enrollment",
-        legend.text=c("Early childhood education","Primary","Middle","Secondary","University"),
-        args.legend = list(ncol=2,x = "topleft",cex=0.8),
-        main="Enrollment by age")
-dev.off()
-pdf("Lectures/figures/Step9.pdf")
-barplot(t(100*EnrollmentGradeAge[1:14,2:6]),names.arg=EnrollmentGradeAge[1:14,1],
-        col=c("#FAA43A","#5DA5DA","#4D4D4D","#F15854","#60BD68"),
-        ylim=c(0,100), cex.lab=1.5,cex.axis=1.5,xlab="Age",ylab="% enrollment",
-        legend.text=c("Early childhood education","Primary","Middle","Secondary","University"),
-        args.legend = list(ncol=2,x = "topleft", bty = "n",cex=1.3),
-        main="Enrollment by age",axes=F)
-axis(side=2,las=1,cex.axis=1.5,lwd=1,cex.lab=1.5)
-dev.off()
+#Frequency polygons
+ggplot(pets, aes(score, color = pet)) +
+  geom_freqpoly(binwidth = 5)
+
+#Histogram
+ggplot(pets, aes(score)) +
+  geom_histogram(binwidth = 5, fill = "white", color = "black")
+
+ggplot(pets, aes(score, fill=pet)) +
+  geom_histogram(binwidth = 5, alpha = 0.5, 
+                 position = "dodge")
+
+#Boxplot
+ggplot(pets, aes(pet, score, fill=pet)) +
+  geom_boxplot(alpha = 0.5)
+
+#Violinplot
+ggplot(pets, aes(pet, score, fill=pet)) +
+  geom_violin(draw_quantiles = .5,
+              trim = FALSE, alpha = 0.5,)
+
+#Scatter plot
+ggplot(pets, aes(age, score, color = pet)) +
+  geom_point()
+
+#Line graph
+ggplot(pets, aes(age, score, color = pet)) +
+  geom_smooth(formula = y ~ x, method="lm")
+
+#### 5. Custommisation ####
+
+# Labels 
+ggplot(pets, aes(age, score, color = pet)) +
+  geom_smooth(formula = y ~ x, method="lm") +
+  labs(title = "Pet score with Age",
+       x = "Age (in Years)",
+       y = "score Score",
+       color = "Pet Type")
+
+ggplot(pets, aes(age, score, color = pet)) +
+  geom_smooth(formula = y ~ x, method="lm") +
+  ggtitle("Pet score with Age") +
+  xlab("Age (in Years)") +
+  ylab("score Score") +
+  scale_color_discrete(name = "Pet Type")
+
+#Colours
+ggplot(pets, aes(pet, score, colour = pet, fill = pet)) +
+  geom_violin() +
+  scale_color_manual(values = c("darkgreen", "dodgerblue", "orange")) +
+  scale_fill_manual(values = c("#CCFFCC", "#BBDDFF", "#FFCC66"))
+
+#Themes 
+ggplot(pets, aes(age, score, color = pet)) +
+  geom_smooth(formula = y ~ x, method="lm") +
+  theme_minimal(base_size = 18)
+
+# Save as file 
+box <- ggplot(pets, aes(pet, score, fill=pet)) +
+  geom_boxplot(alpha = 0.5)
+
+violin <- ggplot(pets, aes(pet, score, fill=pet)) +
+  geom_violin(alpha = 0.5)
+
+ggsave("demog_violin_plot.png", width = 5, height = 7)
+
+ggsave("demog_box_plot.jpg", plot = box, width = 5, height = 7)
+
+#### 6. Combination Plots ####
+
+#Violinbox plot
+ggplot(pets, aes(pet, score, fill = pet)) +
+  geom_violin(show.legend = FALSE) + 
+  geom_boxplot(width = 0.2, fill = "white", 
+               show.legend = FALSE)
+
+#Violin-point-range plot
+ggplot(pets, aes(pet, score, fill=pet)) +
+  geom_violin(trim = FALSE, alpha = 0.5) +
+  stat_summary(
+    fun = mean,
+    fun.max = function(x) {mean(x) + sd(x)},
+    fun.min = function(x) {mean(x) - sd(x)},
+    geom="pointrange"
+  )
+
+#Violin-jitter plot
+# sample_n chooses 50 random observations from the dataset
+ggplot(sample_n(pets, 50), aes(pet, score, fill=pet)) +
+  geom_violin(
+    trim = FALSE,
+    draw_quantiles = c(0.25, 0.5, 0.75), 
+    alpha = 0.5
+  ) + 
+  geom_jitter(
+    width = 0.15, # points spread out over 15% of available width
+    height = 0, # do not move position on the y-axis
+    alpha = 0.5, 
+    size = 3
+  )
+
+#Scatter-line graph
+ggplot(sample_n(pets, 50), aes(age, weight, colour = pet)) +
+  geom_point() +
+  geom_smooth(formula = y ~ x, method="lm")
+
+#Grid of plots 
+gg <- ggplot(pets, aes(pet, score, colour = pet))
+nolegend <- theme(legend.position = "none")
+
+vp <- gg + geom_violin(alpha = 0.5) + nolegend + ggtitle("Violin Plot")
+bp <- gg + geom_boxplot(alpha = 0.5) + nolegend + ggtitle("Box Plot")
+cp <- gg + stat_summary(fun = mean, geom = "col", fill = "white") + nolegend + ggtitle("Column Plot")
+dp <- ggplot(pets, aes(score, colour = pet)) + geom_density() + nolegend + ggtitle("Density Plot")
+
+plot_grid(vp, bp, cp, dp, labels = LETTERS[1:4])
+
+#### 7.Overlapping Discrete Data ####
+
+#Reducing Opacity
+ggplot(pets, aes(age, score, colour = pet)) +
+  geom_point(alpha = 0.25) +
+  geom_smooth(formula = y ~ x, method="lm")
+
+#Proportional Dot Plots
+ggplot(pets, aes(age, score, colour = pet)) +
+  geom_count()
+
+pets %>%
+  group_by(age, score) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  ggplot(aes(age, score, color=count)) +
+  geom_point(size = 2) +
+  scale_color_viridis_c()
+
+#### 8.Overlapping Cotinuous Data ####
+
+#2D Density Plot 
+ggplot(pets, aes(age, score)) +
+  geom_density2d()
+
+ggplot(pets, aes(age, score)) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon") +
+  scale_fill_viridis_c()
+
+#2D Histogram 
+ggplot(pets, aes(age, score)) +
+  geom_bin2d(binwidth = c(1, 5))
+
+#Hexagonal Heatmap
+ggplot(pets, aes(age, score)) +
+  geom_hex(binwidth = c(1, 5))
+
+#Correlation Heatmap
+heatmap <- pets %>%
+  select_if(is.numeric) %>% # get just the numeric columns
+  cor() %>% # create the correlation matrix
+  as_tibble(rownames = "V1") %>% # make it a tibble
+  gather("V2", "r", 2:ncol(.)) # wide to long (V2)
+
+ggplot(heatmap, aes(V1, V2, fill=r)) +
+  geom_tile() +
+  scale_fill_viridis_c()
+
+#### 9. Interactive Plots ####
+
+demog_plot <- ggplot(pets, aes(age, score, fill=pet)) +
+  geom_point() +
+  geom_smooth(formula = y~x, method = lm)
+
+ggplotly(demog_plot)
+
 

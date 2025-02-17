@@ -1,89 +1,60 @@
-#### Author: Álvaro Pérez(Based on Romero Londoño's notes)
-#### Date: September 24, 2024
+### Title: Lab 04
+### Author: Álvaro Pérez
+### Date: February 14, 2025
 
-library(stargazer)
+# Libraries 
+
 library(tidyverse)
-library(ggplot2)
 
-#set seed so we get the same results
-set.seed(6544813)
+#### Pivoting ####
+# pivot_longer()
+table4a
 
-#generate 501 coin flips
-coins <- sample(c("Heads","Tails"),500,replace=T)
-mean(coins=='Heads')
-#proportion of heads
-mean(coins=='Heads')
-pdf("Lectures/figures/barplot_coin.pdf")
-barplot(prop.table(table(coins)))
-dev.off()
+table4a %>% 
+  pivot_longer(c(`1999`, `2000`), names_to = "year", values_to = "cases")
 
-#THE GGPLOT2 WAY
-#ggplot(as.data.frame(coins),aes(x=coins))+geom_bar()
+# pivot_wider()
+table2
 
-#Lets do a simulation repeating the process 2000 times
-#A blank vector to hold our results
-propHeads <- c()
+table2 %>%
+  pivot_wider(names_from = type, values_from = count)
 
-#Let's run this simulation 2000 times
-for (i in 1:2000) {
-  #Re-create data using the true model
-  coinsdraw <- sample(c("Heads","Tails"),500,replace=T)
-  #Re-perform our analysis
-  result <- mean(coinsdraw=="Heads")
-  #And store the result
-  propHeads[i] <- result
-}
+#### Tidy Verbs ####
 
-#Let's see what we get on average
-stargazer(as.data.frame(propHeads),type='text')
+# separate ()
 
-#And let's look at the distribution of our findings
-pdf("Lectures/figures/Distribution_coin.pdf")
-hist(propHeads,xlab="Proportion Heads",main="Mean of 500 Coin Flips over 2000 Samples",freq=F,breaks=15)
-abline(v=mean(propHeads),col='red',lwd=2)
-dev.off()
-#THE GGPLOT2 WAY
-# ggplot(as.data.frame(propHeads),aes(x=propHeads))+stat_density(geom='line')+
-#   geom_vline(aes(xintercept=mean(propHeads)),col='red')+
-#   xlab("Proportion Heads")+
-#   ggtitle("Mean of 501 Coin Flips over 2000 Samples")
+table3
 
-#Generating some normal data
-normaldata <- rnorm(5)
-normaldata
+table3 %>% 
+  separate(rate, into = c("cases", "population"))
 
-normaldata <- rnorm(2000)
-pdf("Lectures/figures/Normal.pdf")
-hist(normaldata,xlab="Random Value",main="Random Data from Normal Distribution",probability=TRUE)
-dev.off()
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep = "/")
 
+# unite ()
 
-#Generating some uniform data
+table5
 
-uniformdata <- runif(5)
-uniformdata
+table5 %>% 
+  unite(new, century, year)
 
-uniformdata <- runif(2000)
-pdf("Lectures/figures/Uniform.pdf")
-hist(uniformdata,xlab="Random Value",main="Random Data from Uniform Distribution",probability=TRUE)
-dev.off()
+table5 %>% 
+  unite(new, century, year, sep = "")
 
+#### Missing values ####
 
+stocks <- tibble(
+  year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+  qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+  return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+)
 
+stocks %>% 
+  pivot_wider(names_from = year, values_from = return) %>% 
+  pivot_longer(
+    cols = c(`2015`, `2016`), 
+    names_to = "year", 
+    values_to = "return", 
+    values_drop_na = TRUE
+  )
 
-#Law of large numbers
-
-## Generate data with 1000 coin flips 
-## Pprob of head and tail is the same
-data <- sample(c("Heads","Tails"),1000,replace=TRUE) 
-## Create random variable (one if heads, zero if tails)
-X<-as.numeric(data=="Heads")
-# Calculate the proportion of heads of the first n observations
-X_n<-cumsum(X)/(1:1000)
-#Plot the results
-pdf("Lectures/figures/LLN.pdf")
-plot(1:1000,X_n,bty="L",ylim=c(0,1),
-     ylab="Average",xlab="Tosses",type="l",lwd=2,
-     cex.lab=1.5,cex.axis=1.5,cex.main=1.5)
-abline(h=0.5,lty=2,col=2,lwd=2)
-dev.off()

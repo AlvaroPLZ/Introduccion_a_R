@@ -27,5 +27,9 @@ El curso consiste en una introducción al uso de R y R Studio para familiarizars
 - [R code](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/2c9132b58e651b961e99c74961167fd7a1920ab8/Script/L5_code.R)
 
 ### Clase 06: Data Relations
-- [Slides](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/e8cdf77332a8d50b59215cb51ffeabf2812013fa/PPT/Lecture_06___R.pdf)
+- [Slides](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/1b307dd55484363f870fbc82e2bebbb10edf765e/PPT/Lecture_06___R.pdf)
 - [R code](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/e8cdf77332a8d50b59215cb51ffeabf2812013fa/Script/L6_code.R)
+
+### Clase 07: Iteration and Functions 
+- [Slides](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/1b307dd55484363f870fbc82e2bebbb10edf765e/PPT/Lecture_07___R.pdf)
+- [R code](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/1b307dd55484363f870fbc82e2bebbb10edf765e/Script/L7_code.R)

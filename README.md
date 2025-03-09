@@ -33,3 +33,11 @@ El curso consiste en una introducción al uso de R y R Studio para familiarizars
 ### Clase 07: Iteration and Functions 
 - [Slides](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/1b307dd55484363f870fbc82e2bebbb10edf765e/PPT/Lecture_07___R.pdf)
 - [R code](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/1b307dd55484363f870fbc82e2bebbb10edf765e/Script/L7_code.R)
+
+### Clase 08: Probability and Simulation
+- [Slides](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/6fe5262a5dfc3ecbc759e01c95c583f2a7156a1f/PPT/Lecture_08___R.pdf)
+- [R_code](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/6fe5262a5dfc3ecbc759e01c95c583f2a7156a1f/Script/L8_code.R)
+- [Exercise](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/6fe5262a5dfc3ecbc759e01c95c583f2a7156a1f/RMD/L8.Rmd)
+#### Supplementary material
+- [Distributions](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/6fe5262a5dfc3ecbc759e01c95c583f2a7156a1f/PPT/Distributions.pdf)
+- [Graphs of the distributions](https://github.com/AlvaroPLZ/Introduccion_a_R/blob/6fe5262a5dfc3ecbc759e01c95c583f2a7156a1f/PPT/Distributions.py)

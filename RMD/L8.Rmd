@@ -1,0 +1,131 @@
+---
+title: "Example_Lab8"
+author: "Alvaro Perez"
+date: "2025-03-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Load & wrangle
+
+We have to do a little data wrangling first. Have a look at the data after you import it and relabel Sex to male and female instead of 1 and 2. Also convert Agemos (age in months) to years. Relabel the column 0 as mean and calculate a new column named sd as the difference between columns 1 and 0.
+
+```{r}
+orig_height_age <- read_csv("https://www.cdc.gov/growthcharts/data/zscore/zstatage.csv") 
+```
+
+```{r}
+height_age <- orig_height_age %>%
+  filter(Sex %in% c(1,2)) %>%
+  mutate(
+    sex = recode(Sex, "1" = "male", "2" = "female"),
+    age = as.numeric(Agemos)/12,
+    sd = `1` - `0`
+  ) %>%
+  select(sex, age, mean = `0`, sd)
+```
+
+## 2. Plot
+
+Plot your new data frame to see how mean height changes with age for boys and girls.
+
+```{r}
+ggplot(height_age, aes(age, mean, color = sex)) +
+  geom_smooth(aes(ymin = mean - sd, 
+                  ymax = mean + sd),
+              stat="identity")
+```
+
+## 3. Simulate a population
+
+Simulate 50 random male heights and 50 random female heights for 20-year-olds using the rnorm() function and the means and SDs from the height_age table. Plot the data.
+
+```{r}
+age_filter <- 20
+m <- filter(height_age, age == age_filter, sex == "male")
+f <- filter(height_age, age == age_filter, sex == "female")
+
+sim_height <- tibble(
+  male = rnorm(50, m$mean, m$sd),
+  female = rnorm(50, f$mean, f$sd)
+) %>%
+  gather("sex", "height", male:female)
+
+ggplot(sim_height) +
+  geom_density(aes(height, fill = sex), alpha = 0.5) +
+  xlim(125, 225)
+```
+
+## 4. Analyse simulated data
+
+Use the sim_t_ind(n, m1, sd1, m2, sd2) function we created above to generate one simulation with a sample size of 50 in each group using the means and SDs of male and female 14-year-olds.
+
+```{r}
+age_filter <- 14
+m <- filter(height_age, age == age_filter, sex == "male")
+f <- filter(height_age, age == age_filter, sex == "female")
+
+sim_t_ind(50, m$mean, m$sd, f$mean, f$sd)
+```
+
+## 5. Replicate and simulation
+
+Now replicate this 1e4 times using the replicate() function. This function will save the returned p-values in a list (my_reps). We can then check what proportion of those p-values are less than our alpha value. This is the power of our test.
+
+```{r}
+my_reps <- replicate(1e4, sim_t_ind(50, m$mean, m$sd, f$mean, f$sd))
+
+alpha <- 0.05
+power <- mean(my_reps < alpha)
+power
+```
+
+## 6. One-tailed prediction
+
+This design has about 65% power to detect the sex difference in height (with a 2-tailed test). Modify the sim_t_ind function for a 1-tailed prediction.
+
+You could just set alternative equal to "greater" in the function, but it might be better to add the alt argument to your function (giving it the same default value as t.test) and change the value of alternative in the function to alt.
+
+```{r}
+sim_t_ind <- function(n, m1, sd1, m2, sd2, alt = "two.sided") {
+  v1 <- rnorm(n, m1, sd1)
+  v2 <- rnorm(n, m2, sd2)
+  t_ind <- t.test(v1, v2, paired = FALSE, alternative = alt)
+  
+  return(t_ind$p.value)
+}
+
+alpha <- 0.05
+my_reps <- replicate(1e4, sim_t_ind(50, m$mean, m$sd, f$mean, f$sd, "greater"))
+mean(my_reps < alpha)
+```
+
+## 7. Range of sample sizes
+
+What if we want to find out what sample size will give us 80% power? We can try trial and error. We know the number should be slightly larger than 50. But you can search more systematically by repeating your power calculation for a range of sample sizes.
+
+Start with a relatively low number of replications and/or more spread-out samples to estimate where you should be looking more specifically. Then you can repeat with a narrower/denser range of sample sizes and more iterations.
+
+```{r}
+# make another custom function to return power
+pwr_func <- function(n, reps = 100, alpha = 0.05) {
+  ps <- replicate(reps, sim_t_ind(n, m$mean, m$sd, f$mean, f$sd, "greater"))
+  mean(ps < alpha)
+}
+
+# make a table of the n values you want to check
+power_table <- tibble(
+  n = seq(20, 100, by = 5)
+) %>%
+  # run the power function for each n
+  mutate(power = map_dbl(n, pwr_func))
+
+# plot the results
+ggplot(power_table, aes(n, power)) +
+  geom_smooth() +
+  geom_point() +
+  geom_hline(yintercept = 0.8)
+```
